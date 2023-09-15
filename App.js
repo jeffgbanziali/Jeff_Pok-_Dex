@@ -5,6 +5,7 @@ import { Pressable, Image, ScrollView, StyleSheet, Text, View } from 'react-nati
 export default function App() {
   const [pokemonList, setPokemonList] = useState([]);
   const [sortedPokemonList, setSortedPokemonList] = useState([]);
+  const [initialList, setInitialList] = useState([]);
   const [isSorted, setIsSorted] = useState(false);
 
   useEffect(() => {
@@ -12,6 +13,7 @@ export default function App() {
       .then(response => response.json())
       .then(data => {
         setPokemonList(data.results);
+        setInitialList(data.results);
       })
       .catch(error => {
         console.log(error);
@@ -24,6 +26,14 @@ export default function App() {
     setSortedPokemonList(sortedList);
     setIsSorted(true);
   };
+
+  const sortReset = () => {
+    const sortedList = [...pokemonList];
+    sortedList.sort((a, b) => a.id - b.id);
+    setSortedPokemonList(sortedList);
+    setIsSorted(false);
+  };
+
 
   return (
 
@@ -44,29 +54,51 @@ export default function App() {
           marginBottom: 20,
         }}
       >
-        <Pressable
-          style={
-            {
+        {isSorted ? (
+          <Pressable
+            style={{
               width: 200,
               height: 50,
               backgroundColor: '#ff2323',
               borderRadius: 10,
               justifyContent: 'center',
-            }
-          }
-          onPress={sortPokemonList}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-              color: 'white',
-              fontSize: 16,
-              fontWeight: 'bold'
             }}
+            onPress={sortReset}
           >
-            Trier par ordre alpha
-          </Text>
-        </Pressable>
+            <Text
+              style={{
+                textAlign: 'center',
+                color: 'white',
+                fontSize: 16,
+                fontWeight: 'bold',
+              }}
+            >
+              Retour à l'état initial
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            style={{
+              width: 200,
+              height: 50,
+              backgroundColor: '#ff2323',
+              borderRadius: 10,
+              justifyContent: 'center',
+            }}
+            onPress={sortPokemonList}
+          >
+            <Text
+              style={{
+                textAlign: 'center',
+                color: 'white',
+                fontSize: 16,
+                fontWeight: 'bold',
+              }}
+            >
+              Trier par ordre alpha
+            </Text>
+          </Pressable>
+        )}
       </View>
 
 
